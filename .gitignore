@@ -2,6 +2,7 @@
 __alembic*/
 nenv/ 
 config.py
+naginie_themes/admin/static/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
