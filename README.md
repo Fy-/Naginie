@@ -6,7 +6,7 @@ Naginie is a mini-CMS based on python / flask / sqlalchemy, aimed to easily depl
 It's still early stage and **Naginie is not usable at the moment**.
 
 ## History ##
-I made a flask based CMS a long time ago and this is the 2020 version of my old CMS: [FyPress](https://github.com/Fy-/FyPress).
+I made a flask based CMS a long time ago and this is the 2020 version of my old CMS: [FyPress](https://github.com/Fy-/FyPress). I was tired of wordpress and I plan on developping tools to migrate from WP to Naginie in the future.
 
 ## License
 All program code is licensed under GPL v3.0 unless otherwise specified.  Please see the "LICENSE" file for more information.  
