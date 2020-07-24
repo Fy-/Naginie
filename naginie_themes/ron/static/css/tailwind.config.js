@@ -1,16 +1,12 @@
 module.exports = {
 	purge: {
-		mode: 'all',
 		enabled: true,
+		mode: "all",
 		content: [
-			'../../**.html',
-			'./naginie_themes/ron/**.html'
+			'./naginie_themes/ron/*.html'
 		],
-		theme: {
-			extend: {},
-		},
-		variants: {},
-		plugins: [
-		],
-	}
-}
+	},
+	theme: {},
+	variants: {},
+	plugins: [],
+};

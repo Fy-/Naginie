@@ -15,3 +15,4 @@ def home():
 	return render_template(
 		tpl_dir('index.html')
 	)
+
