@@ -1,0 +1,27 @@
+{
+  "name": "Naginie",
+  "version": "2.0.0",
+  "description": "-",
+  "main": "index.js",
+  "scripts": {
+    "watch": "parcel watch naginie_admin/index.js -d naginie_themes/admin/static",
+    "build": "parcel build naginie_admin/index.js -d naginie_themes/admin/static",
+    "ron_css": "npx tailwindcss build naginie_themes/ron/static/css/style.src.css -c naginie_themes/ron/static/css/tailwind.config.js -o naginie_themes/ron/static/css/style.css"
+  },
+  "alias": {
+    "vue": "./node_modules/vue/dist/vue.common.js"
+  },
+  "dependencies": {
+    "autoprefixer": "^9.8.0",
+    "modern-normalize": "^0.6.0",
+    "parcel-bundler": "^1.12.4",
+    "postcss-modules": "^2.0.0",
+    "vue": "^2.6.11",
+    "vue-hot-reload-api": "^2.3.4"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^3.1.2",
+    "tailwindcss": "^1.5.2",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
