@@ -21,7 +21,7 @@ class NaginieDirectory(db.Model, BaseNestedSets):
 	def __unicode__(self):
 		return '%s' % self.title
 
-	def to_dict(self):
+	def _to_dict(self):
 		return NaginieDirectory.to_dict(self)
 
 	@staticmethod

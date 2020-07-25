@@ -5,15 +5,30 @@ import router from "./router";
 import store from "./store";
 
 import "./assets/css/index.css";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faFontAwesome } from "@fortawesome/free-brands-svg-icons";
-import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTachometerAlt,
+  faCogs,
+  faSitemap,
+  faFileCode,
+  faArrowRight,
+  faUsers,
+  faUserTag
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 Vue.config.productionTip = false;
 Vue.component("font-awesome-icon", FontAwesomeIcon);
-library.add(faUserSecret);
-library.add(faFontAwesome);
+library.add(
+  faTachometerAlt,
+  faCogs,
+  faSitemap,
+  faFileCode,
+  faArrowRight,
+  faUsers,
+  faUserTag
+);
 
 Vue.config.productionTip = false;
 

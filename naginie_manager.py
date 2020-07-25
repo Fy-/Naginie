@@ -28,10 +28,14 @@ def init_naginie():
 	db.session.add(NaginieDirectory(title="Naginie", slug="/", description="My Naginie Website")) 
 
 	print('*** Setting options')
-	NaginieOption.set('theme', 'Ron')
+	NaginieOption.set('theme', 'ron')
 
-	print('*** Adding admin role')
-	db.session.add(NaginieRole(title='Admin', description='Gods.'))
+	print('*** Adding default roles')
+	db.session.add(NaginieRole(title='Administrator', slug='administrator', description='Somebody who needs to be aware of the Peter Parker principle: With great power comes great responsibility.'))
+	db.session.add(NaginieRole(title='Editor', slug='editor', description='Somebody who can publish and manage posts including the posts of other users.'))
+	db.session.add(NaginieRole(title='Author', slug='author', description='Somebody who can publish and manage their own posts.'))
+	db.session.add(NaginieRole(title='Contributor', slug='contributor', description='Somebody who can write and manage their own posts but cannot publish them.'))
+
 	db.session.commit()
 	admin_role = NaginieRole.query.filter(NaginieRole.id==1).first()
 

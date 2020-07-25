@@ -1,9 +1,14 @@
 import datetime
+import jwt
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from flask import current_app, jsonify, request
 
 from ..naginie import db
+from ..helpers.messages import * 
+
+
 
 role_user = db.Table('naginie_role_user',
 	db.Column('user_id', db.Integer(), db.ForeignKey('naginie_user.id')),
@@ -14,6 +19,7 @@ class NaginieRole(db.Model):
 	__tablename__ = 'naginie_role'
 	id = db.Column(db.Integer(), primary_key=True)
 	title = db.Column(db.String(96))
+	slug = db.Column(db.String(80), unique=True)
 	description = db.Column(db.String(160))
 
 	def __repr__(self):
@@ -22,13 +28,14 @@ class NaginieRole(db.Model):
 	def __unicode__(self):
 		return '%s' % self.name
 
-	def to_dict(self):
+	def _to_dict(self):
 		return NaginieRole.to_dict(self)
 
 	@staticmethod
 	def to_dict(n_role):
 		return {
 			'id': n_role.id,
+			'slug': n_role.slug,
 			'title': n_role.title,
 			'description': n_role.description,
 		}
@@ -72,22 +79,41 @@ class NaginieUser(db.Model):
 	def __unicode__(self):
 		return '%s' % self.nicename
 
-	def to_dict(self):
-		return NaginieUser.to_dict(self)
+	def _to_dict(self, roles=False):
+		return NaginieUser.to_dict(self, roles)
 
 	@staticmethod
-	def to_dict(n_user):
-		return {
+	def to_dict(n_user, roles=False):
+		r =  {
 			'id': n_user.id,
-			'nicename': self.nicename,
-			'email': self.email,
-			'username': self.username,
-			'lastname': self.lastname,
-			'firstname': self.firstname,
-			'created': self.created.isoformat(),
-			'updated': self.updated.isoformat(),
-			'logged': self.logged.isoformat()
+			'nicename': n_user.nicename,
+			'email': n_user.email,
+			'username': n_user.username,
+			'lastname': n_user.lastname,
+			'firstname': n_user.firstname,
+			'created': n_user.created.isoformat(),
+			'updated': n_user.updated.isoformat(),
+			'logged': n_user.logged.isoformat()
 		}
+		r['roles'] = []
+		r['roles_by_slug'] = []
+		for _role in n_user.roles:
+			r['roles'].append(_role._to_dict())
+			r['roles_by_slug'].append(_role.slug)
+		return r
+
+	@classmethod
+	def authenticate(cls, **kwargs):
+		email = kwargs.get('email')
+		password = kwargs.get('password')
+		if not email or not password:
+			return None
+
+		user = NaginieUser.query.filter(NaginieUser.email==email).first()
+		if user and user.check_password(password):
+			return user
+			
+		return None
 
 	def check_password(self, password):
 		if self.password == None:
@@ -106,3 +132,59 @@ class NaginieUser(db.Model):
 			return self.lastname
 		else:
 			return self.email.split('@')[0]
+
+class RoleRequired(object):
+	__roles_by_slug = {}
+	__roles_needs_update = True
+
+	def __init__(self, roles=[]):
+		self.roles = roles
+
+	def update_roles(self):
+		if RoleRequired.__roles_needs_update:
+			_roles = NaginieRole.query.filter().all()
+			RoleRequired.__roles_by_slug = {}
+			for _role in _roles:
+				RoleRequired.__roles_by_slug[_role.slug] = _role
+
+			RoleRequired.__roles_needs_update = False
+
+	def check_roles(self, user, roles):
+		if len(roles) == 0 and user:
+			return True
+		else:
+			for role in roles:
+				if role not in RoleRequired.__roles_by_slug:
+					print('*** Warning: checking vs an unknown role: %s.' % role)
+					continue
+
+				if RoleRequired.__roles_by_slug[role] in user.roles:
+					return True
+			return False
+
+	def __call__(self, f):
+		def wrapped_f(*args, **kwargs):
+			auth_headers = request.headers.get('Authorization', '').split()
+
+			if len(auth_headers) != 2:
+				return jsonify(auth_invalid_msg), 401
+			try:
+				token = auth_headers[1]
+				data = jwt.decode(token, current_app.config['SECRET_KEY'])
+				print()
+				user = NaginieUser.query.filter(NaginieUser.id==data['user']['id']).first()
+
+				self.update_roles()
+
+				if not user:
+					raise RuntimeError('User not found')
+
+				if not self.check_roles(user, self.roles):
+					return jsonify(auth_invalid_role), 403
+				return f(user, *args, **kwargs)
+			except jwt.ExpiredSignatureError:
+				return jsonify(auth_expired_msg), 401 # 401 is Unauthorized HTTP status code
+			except (jwt.InvalidTokenError, Exception) as e:
+				print(e)
+				return jsonify(auth_invalid_msg), 401
+		return wrapped_f

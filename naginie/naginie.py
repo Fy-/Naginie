@@ -26,8 +26,9 @@ class Naginie(object):
 		self.app.migrate = Migrate(self.app, db, directory='__alembic_%s' % _name)
 
 		options.init_app(self.app)
-		cors = CORS(self.app, resources={r"/*": {"origins": "*"}})
+		cors = CORS(self.app, resources={r"/api/*": {"origins": "*"}})
 		
-		from .routes import default_bp, admin_bp
+		from .routes import default_bp, admin_bp, api_bp
 		self.app.register_blueprint(default_bp)
 		self.app.register_blueprint(admin_bp)
+		self.app.register_blueprint(api_bp)

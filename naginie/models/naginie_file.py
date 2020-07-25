@@ -20,7 +20,7 @@ class NaginieFile(db.Model):
 	def __unicode__(self):
 		return '%s' % self.title
 		
-	def to_dict(self):
+	def _to_dict(self):
 		return NaginieFile.to_dict(self)
 
 	@staticmethod
