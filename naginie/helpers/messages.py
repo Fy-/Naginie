@@ -11,3 +11,13 @@ auth_invalid_role = {
 	'message': 'Invalid role for this action.',
 	'authenticated': False
 }
+
+empty_list = {
+	"items": [],
+	"pages": 1,
+	"page": 1,
+	"prev": 1,
+	"next": 1,
+	"has_next": False,
+	"has_prev": False,
+}

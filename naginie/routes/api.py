@@ -3,7 +3,7 @@ from functools import wraps
 import jwt
 import os
 import datetime
-from ..models.naginie_user import NaginieUser, NaginieRole, RoleRequired
+from ..models.naginie_user import NaginieUser, NaginieRole, role_required
 
 root = os.path.dirname(__file__)
 
@@ -33,7 +33,7 @@ def login():
 
 ### Users List ###
 @bp.route('/users/')
-@RoleRequired(['administrator'])
+@role_required(['administrator'])
 def users(user):
 	page = request.args.get('page', 1)
 	page = int(page)
@@ -53,3 +53,47 @@ def users(user):
 		result["items"].append(_user._to_dict(True))
 
 	return jsonify(result)
+
+### Users Search ###
+@bp.route('/users/search/')
+@role_required(['administrator'])
+def users_search(user):
+	page = request.args.get('page', 1)
+	page = int(page)
+	term = request.args.get('term', False)
+
+	if not term:
+		return jsonify(empty_list)
+
+
+	users = NaginieUser.query.filter(
+		NaginieUser.email.ilike("%" + term + "%")
+		| NaginieUser.firstname.ilike("%" + term + "%")
+		| NaginieUser.lastname.ilike("%" + term + "%")
+		| NaginieUser.username.ilike("%" + term + "%")
+	).order_by(NaginieUser.id.desc()).paginate(page, per_page=12)
+
+	result = {
+		"items": [],
+		"pages": users.pages,
+		"page": page,
+		"prev": users.prev_num,
+		"next": users.next_num,
+		"has_next": users.has_next,
+		"has_prev": users.has_prev,
+	}
+
+	for _user in users.items:
+		result["items"].append(_user._to_dict(True))
+
+	return jsonify(result)
+
+### User profile ###
+### Users Search ###
+@bp.route('/users/<int:id>')
+@role_required(['administrator'])
+def users_profile(user, id):
+	user = NaginieUser.query.filter(NaginieUser.id==id).first()
+	if user:
+		return jsonify(user._to_dict(True))
+	return jsonify({'error': 404}), 404

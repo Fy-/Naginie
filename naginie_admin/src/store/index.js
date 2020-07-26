@@ -8,7 +8,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     sideBarOpen: false,
-    user: getUserFromJwt(localStorage.getItem('token')),
+    user: getUserFromJwt(localStorage.getItem("token")),
     jwt: localStorage.getItem("token") || false
   },
   getters: {

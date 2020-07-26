@@ -8,13 +8,13 @@
           id="login_form"
         >
           <div class="w-full border-b flex  items-center mb-4">
-                    <img
+            <img
               src="../assets/naginie.png"
               style="width: 70px;"
               class="mr-4"
               @click="dropDownOpen = !dropDownOpen"
             />
-            <p class="font-semibold text-3xl text-blue-400 ">
+            <p class="font-semibold text-3xl text-teal-400 ">
               Naginie
             </p>
           </div>
@@ -59,13 +59,13 @@
           </div>
           <div class="flex items-center justify-between">
             <button
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               Sign In
             </button>
             <!--<a
-              class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              class="inline-block align-baseline font-bold text-sm text-teal-500 hover:text-teal-800"
               href="#"
             >
               Forgot Password?

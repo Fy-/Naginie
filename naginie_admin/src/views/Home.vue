@@ -3,13 +3,12 @@
     <nav class="text-sm font-semibold mb-6" aria-label="Breadcrumb">
       <ol class="list-none p-0 inline-flex">
         <li class="flex items-center">
-          <router-link to="/" class="text-gray-600 pr-4">Dashboard</router-link>
+          <router-link to="/" class="text-teal-500 pr-4">Dashboard</router-link>
         </li>
       </ol>
     </nav>
 
-
-    {{user}}
+    {{ user }}
   </div>
 </template>
 
@@ -22,7 +21,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["user"]),
-  },
+    ...mapState(["user"])
+  }
 };
 </script>

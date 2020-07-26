@@ -13,27 +13,57 @@
             style="width: 64px;"
             @click="dropDownOpen = !dropDownOpen"
           />
-          <p class="font-semibold text-3xl text-blue-400 pl-4">
+          <p class="font-semibold text-3xl text-teal-400 pl-4">
             Naginie
           </p>
         </div>
 
         <div class="mb-4 px-4">
           <p class="pl-4 text-sm font-semibold mb-1">MAIN</p>
-          <NavLink to="/" icon="tachometer-alt" title="Dashboard" :current="this.$route.path" />
-          <NavLink to="/directories/" icon="sitemap" title="Directories" :current="this.$route.path" />
-          <NavLink to="/files/" icon="file-code" title="Files" :current="this.$route.path" />
+          <NavLink
+            to="/"
+            icon="tachometer-alt"
+            title="Dashboard"
+            :current="this.$route.path"
+          />
+          <NavLink
+            to="/directories/"
+            icon="sitemap"
+            title="Directories"
+            :current="this.$route.path"
+          />
+          <NavLink
+            to="/files/"
+            icon="file-code"
+            title="Files"
+            :current="this.$route.path"
+          />
         </div>
 
         <div class="mb-4 px-4">
           <p class="pl-4 text-sm font-semibold mb-1">USERS</p>
-          <NavLink to="/users/" icon="users" title="Users" :current="this.$route.path" />
-          <NavLink to="/roles/" icon="user-tag" title="Roles" :current="this.$route.path" />
+          <NavLink
+            to="/users/"
+            icon="users"
+            title="Users"
+            :current="this.$route.path"
+          />
+          <NavLink
+            to="/roles/"
+            icon="user-tag"
+            title="Roles"
+            :current="this.$route.path"
+          />
         </div>
 
         <div class="mb-4 px-4">
           <p class="pl-4 text-sm font-semibold mb-1">MISC</p>
-          <NavLink to="/settings/" icon="cogs" title="Settings" :current="this.$route.path" />
+          <NavLink
+            to="/settings/"
+            icon="cogs"
+            title="Settings"
+            :current="this.$route.path"
+          />
         </div>
       </div>
 
@@ -49,7 +79,7 @@
             <div class="flex">
               <div class="inline-block lg:hidden flex items-center mr-4">
                 <button
-                  class="hover:text-blue-500 hover:border-white focus:outline-none navbar-burger"
+                  class="hover:text-teal-500 hover:border-white focus:outline-none navbar-burger"
                   @click="toggleSidebar()"
                 >
                   <svg
@@ -63,22 +93,13 @@
                 </button>
               </div>
 
-              <div class="relative text-gray-600">
-                <input
-                  type="search"
-                  name="serch"
-                  placeholder="Search..."
-                  class="bg-white h-10 w-full xl:w-64 px-5 rounded-lg border text-sm focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  class="absolute right-0 top-0 mt-3 mr-4"
-                ></button>
-              </div>
+
             </div>
 
             <div class="flex items-center relative">
-              <p class="mr-4" @click="dropDownOpen = !dropDownOpen">Ho, hi {{user.nicename}}!</p>
+              <p class="mr-4" @click="dropDownOpen = !dropDownOpen">
+                Ho, hi {{ user.nicename }}!
+              </p>
             </div>
           </div>
 
@@ -97,7 +118,6 @@
         </div>
 
         <div class="p-6 bg-gray-100 mb-20">
-         
           <router-view />
         </div>
 
@@ -105,7 +125,7 @@
           class="w-full border-t-2 px-8 py-6 lg:flex justify-between items-center"
         >
           <p class="mb-2 lg:mb-0">
-            Powered by Naginie, made with ❤ 
+            Powered by Naginie, made with ❤
           </p>
         </div>
       </div>
@@ -123,11 +143,11 @@ export default {
     NavLink
   },
   computed: {
-    ...mapState(["sideBarOpen", "user"]),
+    ...mapState(["sideBarOpen", "user"])
   },
   data() {
     return {
-      dropDownOpen: false,
+      dropDownOpen: false
     };
   },
   methods: {
@@ -136,7 +156,7 @@ export default {
     },
     logout() {
       this.$store.dispatch("logout").then(() => this.$router.go("/"));
-    },
-  },
+    }
+  }
 };
 </script>

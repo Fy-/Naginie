@@ -1,8 +1,8 @@
 module.exports = {
-	purge: [],
-	theme: {
-		extend: {},
-	},
-	variants: { tableLayout: ["responsive", "hover", "focus"] },
-	plugins: [],
+  purge: [],
+  theme: {
+    extend: {}
+  },
+  variants: { tableLayout: ["responsive", "hover", "focus"] },
+  plugins: []
 };

@@ -1,5 +1,10 @@
 import datetime
 import jwt
+import sys
+import traceback
+
+from functools import wraps
+
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
@@ -133,6 +138,66 @@ class NaginieUser(db.Model):
 		else:
 			return self.email.split('@')[0]
 
+__roles_by_slug = {}
+__roles_needs_update = True
+
+def update_roles():
+	global __roles_by_slug, __roles_needs_update
+
+	if __roles_needs_update:
+		_roles = NaginieRole.query.filter().all()
+		__roles_by_slug = {}
+		for _role in _roles:
+			__roles_by_slug[_role.slug] = _role
+
+		#__roles_needs_update = False
+
+def check_roles( user, roles):
+	global __roles_by_slug, __roles_needs_update
+
+	if len(roles) == 0 and user:
+		return True
+	else:
+		for role in roles:
+			if role not in __roles_by_slug:
+				print('*** Warning: checking vs an unknown role: %s.' % role)
+				continue
+
+			if __roles_by_slug[role] in user.roles:
+				return True
+		return False
+
+def role_required(roles=[]):
+	def decorator(f):
+		@wraps(f)
+		def decorated_function(*args, **kwargs):
+			auth_headers = request.headers.get('Authorization', '').split()
+
+			if len(auth_headers) != 2:
+				return jsonify(auth_invalid_msg), 401
+			try:
+				token = auth_headers[1]
+				data = jwt.decode(token, current_app.config['SECRET_KEY'])
+				user = NaginieUser.query.filter(NaginieUser.id==data['user']['id']).first()
+				update_roles()
+
+				if not user:
+					raise RuntimeError('User not found')
+
+				if not check_roles(user, roles):
+					return jsonify(auth_invalid_role), 403
+				return f(user, *args, **kwargs)
+			except jwt.ExpiredSignatureError:
+				return jsonify(auth_expired_msg), 401 # 401 is Unauthorized HTTP status code
+			except jwt.InvalidTokenError:
+				return jsonify(auth_invalid_msg), 401
+			except Exception as e:
+				exc_type, exc_value, exc_traceback = sys.exc_info()
+				traceback.print_tb(exc_traceback, file=sys.stdout)
+		return decorated_function
+	return decorator
+
+"""
 class RoleRequired(object):
 	__roles_by_slug = {}
 	__roles_needs_update = True
@@ -186,3 +251,4 @@ class RoleRequired(object):
 				print(e)
 				return jsonify(auth_invalid_msg), 401
 		return wrapped_f
+"""

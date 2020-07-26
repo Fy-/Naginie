@@ -14,7 +14,8 @@ import {
   faFileCode,
   faArrowRight,
   faUsers,
-  faUserTag
+  faUserTag,
+  faSearch
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -27,9 +28,10 @@ library.add(
   faFileCode,
   faArrowRight,
   faUsers,
-  faUserTag
+  faUserTag,
+  faSearch
 );
-Vue.use(require('vue-moment'));
+Vue.use(require("vue-moment"));
 
 Vue.config.productionTip = false;
 
