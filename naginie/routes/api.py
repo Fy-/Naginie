@@ -35,8 +35,9 @@ def login():
 @bp.route('/users/')
 @RoleRequired(['administrator'])
 def users(user):
-	page = 1
-	users = NaginieUser.query.filter().order_by(NaginieUser.id.desc()).paginate(page, per_page=15)
+	page = request.args.get('page', 1)
+	page = int(page)
+	users = NaginieUser.query.filter().order_by(NaginieUser.id.desc()).paginate(page, per_page=12)
 
 	result = {
 		"items": [],

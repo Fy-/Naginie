@@ -125,7 +125,7 @@ class NaginieUser(db.Model):
 		if self.username:
 			return self.username
 		elif self.firstname and self.lastname:
-			return '%s %s' % (self.fistname, self.lastname)
+			return '%s %s' % (self.firstname, self.lastname)
 		elif self.firstname:
 			return self.firstname
 		elif self.lastname:
@@ -147,7 +147,7 @@ class RoleRequired(object):
 			for _role in _roles:
 				RoleRequired.__roles_by_slug[_role.slug] = _role
 
-			RoleRequired.__roles_needs_update = False
+			#RoleRequired.__roles_needs_update = False
 
 	def check_roles(self, user, roles):
 		if len(roles) == 0 and user:
@@ -171,9 +171,7 @@ class RoleRequired(object):
 			try:
 				token = auth_headers[1]
 				data = jwt.decode(token, current_app.config['SECRET_KEY'])
-				print()
 				user = NaginieUser.query.filter(NaginieUser.id==data['user']['id']).first()
-
 				self.update_roles()
 
 				if not user:

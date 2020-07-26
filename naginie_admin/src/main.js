@@ -29,6 +29,7 @@ library.add(
   faUsers,
   faUserTag
 );
+Vue.use(require('vue-moment'));
 
 Vue.config.productionTip = false;
 

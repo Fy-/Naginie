@@ -1,6 +1,6 @@
 from flask_migrate import MigrateCommand
 from flask_script import Manager
-import pprint
+import pprint, csv
 
 from naginie_demo import create_app
 from config import Config
@@ -42,7 +42,21 @@ def init_naginie():
 	print('*** Adding first user')
 	db.session.add(NaginieUser(email='m@fy.to', password='stay', username='Fy', roles=[admin_role]))
 	db.session.commit()
-	
+
+### TESTS ###
+@manager.command
+def test_users():
+	with open('./naginie_tests/datas/users.csv', "r") as f:
+		reader = csv.reader(f)
+		for row in reader:
+			db.session.add(NaginieUser(
+					email=row[0], 
+					password='test', 
+					firstname=row[1],
+	                lastname=row[2]
+                )
+			)
+		db.session.commit()
 """
 @manager.command
 def show_directories():

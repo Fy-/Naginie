@@ -6,8 +6,8 @@ export function authenticate(userData) {
 	return axios.post(`${API_URL}/login/`, userData);
 }
 
-export function test() {
-	return axios.get(`${API_URL}/users/`, {
+export function getUsers(page=1) {
+	return axios.get(`${API_URL}/users/?page=${page}`, {
 		headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` },
 	});
 }

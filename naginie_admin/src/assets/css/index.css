@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');
+@import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700");
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,8 @@
 
 body {
     font-family: Poppins, sans-serif;
+        height: 100%;
+
 }
 
 body::-webkit-scrollbar {
@@ -13,7 +15,7 @@ body::-webkit-scrollbar {
 }
 
 .overlay {
-    position: relative; 
+    position: relative;
 }
 
 /* 1024 -1 so it doesnt show when it hits 1024px */
@@ -30,4 +32,22 @@ body::-webkit-scrollbar {
         pointer-events: none;
         position: fixed;
     }
+}
+
+@media (min-width: 640px) {
+    table {
+        display: inline-table !important;
+    }
+
+    thead tr:not(:first-child) {
+        display: none;
+    }
+}
+
+td:not(:last-child) {
+    border-bottom: 0;
+}
+
+th:not(:last-child) {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }

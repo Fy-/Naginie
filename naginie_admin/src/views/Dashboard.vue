@@ -10,7 +10,7 @@
           <img
             src="../assets/naginie.png"
             class=""
-            style="width: 75px;"
+            style="width: 64px;"
             @click="dropDownOpen = !dropDownOpen"
           />
           <p class="font-semibold text-3xl text-blue-400 pl-4">
@@ -20,55 +20,20 @@
 
         <div class="mb-4 px-4">
           <p class="pl-4 text-sm font-semibold mb-1">MAIN</p>
-          <div
-            class="w-full flex items-center text-blue-400 h-10 pl-4 bg-gray-300 hover:bg-gray-200 rounded-lg cursor-pointer"
-          >
-            <font-awesome-icon icon="tachometer-alt"></font-awesome-icon>
-
-            <span class="text-gray-700 pl-4">Dashboard</span>
-          </div>
-          <div
-            class="w-full flex items-center text-blue-400 h-10 pl-4  hover:bg-gray-200 rounded-lg cursor-pointer"
-          >
-            <font-awesome-icon icon="sitemap"></font-awesome-icon>
-
-            <span class="text-gray-700 pl-4">Directories</span>
-          </div>
-          <div
-            class="w-full flex items-center text-blue-400 h-10 pl-4  hover:bg-gray-200 rounded-lg cursor-pointer"
-          >
-            <font-awesome-icon icon="file-code"></font-awesome-icon>
-
-            <span class="text-gray-700 pl-4">Files</span>
-          </div>
+          <NavLink to="/" icon="tachometer-alt" title="Dashboard" :current="this.$route.path" />
+          <NavLink to="/directories/" icon="sitemap" title="Directories" :current="this.$route.path" />
+          <NavLink to="/files/" icon="file-code" title="Files" :current="this.$route.path" />
         </div>
 
         <div class="mb-4 px-4">
           <p class="pl-4 text-sm font-semibold mb-1">USERS</p>
-
-          <div
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
-          >
-            <font-awesome-icon icon="users"></font-awesome-icon>
-            <span class="text-gray-700 pl-4">Users</span>
-          </div>
-          <div
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
-          >
-            <font-awesome-icon icon="user-tag"></font-awesome-icon>
-            <span class="text-gray-700 pl-4">Roles</span>
-          </div>
+          <NavLink to="/users/" icon="users" title="Users" :current="this.$route.path" />
+          <NavLink to="/roles/" icon="user-tag" title="Roles" :current="this.$route.path" />
         </div>
 
         <div class="mb-4 px-4">
           <p class="pl-4 text-sm font-semibold mb-1">MISC</p>
-
-          <div
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
-          >
-            <font-awesome-icon icon="cogs"></font-awesome-icon>
-            <span class="text-gray-700 pl-4">Settings</span>
-          </div>
+          <NavLink to="/settings/" icon="cogs" title="Settings" :current="this.$route.path" />
         </div>
       </div>
 
@@ -114,11 +79,6 @@
 
             <div class="flex items-center relative">
               <p class="mr-4" @click="dropDownOpen = !dropDownOpen">Ho, hi {{user.nicename}}!</p>
-              <img
-                src="https://dummyimage.com/512x512"
-                class="w-12 h-12 rounded-full shadow-lg"
-                @click="dropDownOpen = !dropDownOpen"
-              />
             </div>
           </div>
 
@@ -145,7 +105,7 @@
           class="w-full border-t-2 px-8 py-6 lg:flex justify-between items-center"
         >
           <p class="mb-2 lg:mb-0">
-            Powered by Naginie, made with ❤  -  <a href="javascript:void(0);" @click="test" >test</a>
+            Powered by Naginie, made with ❤ 
           </p>
         </div>
       </div>
@@ -155,11 +115,13 @@
 
 <script>
 import { mapState } from "vuex";
-import { test } from "@/api/user";
+import NavLink from "@/components/NavLink";
 
 export default {
   name: "Dashboard",
-
+  components: {
+    NavLink
+  },
   computed: {
     ...mapState(["sideBarOpen", "user"]),
   },
@@ -169,9 +131,6 @@ export default {
     };
   },
   methods: {
-    test() {
-      test();
-    },
     toggleSidebar() {
       this.$store.dispatch("toggleSidebar");
     },
