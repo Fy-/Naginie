@@ -1,6 +1,10 @@
 # Naginie
 
-Naginie is a mini-CMS based on python / flask / sqlalchemy, aimed to easily deploy content-managed websites through organized directories and files and assigning properties to the said directories and files. For example, a directory can be a blog while the other one can be just the footer navigation. 
+
+| ^_^ | Naginie                               |
+| ------------- | ------------------------------------ |
+| ![Naginie](https://raw.githubusercontent.com/Fy-/Naginie/master/naginie_admin/public/img/icons/android-chrome-192x192.png) | Naginie is a mini-CMS based on python / flask / sqlalchemy, aimed to easily deploy content-managed websites through organized directories and files and assigning properties to the said directories and files. For example, a directory can be a blog while the other one can be just the footer navigation. |
+
 
 ## Status ##
 It's still early stage and **Naginie is not usable at the moment**.
