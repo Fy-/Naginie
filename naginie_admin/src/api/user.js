@@ -23,3 +23,21 @@ export function profileUser(id) {
     headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
   });
 }
+
+export function passwordUser(id, password) {
+  return axios.post(`${API_URL}/users/pwd/${id}`, {password:password}, {
+    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+  });
+}
+
+export function dataUser(id, data) {
+  return axios.post(`${API_URL}/users/data/${id}`, data, {
+    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+  });
+}
+
+export function getRoles() {
+  return axios.get(`${API_URL}/users/roles`, {
+    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+  });
+}

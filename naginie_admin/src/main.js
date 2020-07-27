@@ -32,6 +32,10 @@ library.add(
   faSearch
 );
 Vue.use(require("vue-moment"));
+Vue.component('FlashMessage', require('./components/FlashMessage.vue').default);
+Vue.component('Modal', require('./components/Modal.vue').default);
+Vue.component('Paginate', require('./components/Paginate.vue').default);
+
 
 Vue.config.productionTip = false;
 

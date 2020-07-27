@@ -1,7 +1,6 @@
 import datetime
 import jwt
-import sys
-import traceback
+import re
 
 from functools import wraps
 
@@ -14,13 +13,13 @@ from ..naginie import db
 from ..helpers.messages import * 
 
 
-
 role_user = db.Table('naginie_role_user',
 	db.Column('user_id', db.Integer(), db.ForeignKey('naginie_user.id')),
 	db.Column('role_id', db.Integer(), db.ForeignKey('naginie_role.id'))
 )
 
 class NaginieRole(db.Model):
+	__slugs__ = ['administrator', 'editor', 'author', 'contributor']
 	__tablename__ = 'naginie_role'
 	id = db.Column(db.Integer(), primary_key=True)
 	title = db.Column(db.String(96))
@@ -84,11 +83,11 @@ class NaginieUser(db.Model):
 	def __unicode__(self):
 		return '%s' % self.nicename
 
-	def _to_dict(self, roles=False):
-		return NaginieUser.to_dict(self, roles)
+	def _to_dict(self, roles=False, prev_next=False):
+		return NaginieUser.to_dict(self, roles, prev_next)
 
 	@staticmethod
-	def to_dict(n_user, roles=False):
+	def to_dict(n_user, roles=False, prev_next=False):
 		r =  {
 			'id': n_user.id,
 			'nicename': n_user.nicename,
@@ -105,6 +104,10 @@ class NaginieUser(db.Model):
 		for _role in n_user.roles:
 			r['roles'].append(_role._to_dict())
 			r['roles_by_slug'].append(_role.slug)
+
+		if prev_next:
+			r['prev_next'] = n_user.prev_next
+
 		return r
 
 	@classmethod
@@ -116,6 +119,9 @@ class NaginieUser(db.Model):
 
 		user = NaginieUser.query.filter(NaginieUser.email==email).first()
 		if user and user.check_password(password):
+			user.logged = datetime.datetime.now()
+			db.session.add(user)
+			db.session.commit()
 			return user
 			
 		return None
@@ -124,6 +130,19 @@ class NaginieUser(db.Model):
 		if self.password == None:
 			return False
 		return check_password_hash(self.password, password)
+
+
+	@hybrid_property
+	def prev_next(self):
+		_n = NaginieUser.query.filter(NaginieUser.id > self.id).order_by(NaginieUser.id.asc()).first()
+		_p = NaginieUser.query.filter(NaginieUser.id < self.id).order_by(NaginieUser.id.desc()).first()
+
+		r = {
+			'next' : _n.id if _n else False,
+			'prev' : _p.id if _p else False,
+		}
+
+		return r
 
 	@hybrid_property
 	def nicename(self):
@@ -137,6 +156,27 @@ class NaginieUser(db.Model):
 			return self.lastname
 		else:
 			return self.email.split('@')[0]
+
+	@staticmethod
+	def check_password_format(pwd):
+		if not pwd or pwd == "":
+			return 'Password can\'t be empty.'
+		elif len(pwd) > 32 or len(pwd) < 4:
+			return 'Password must be between 4 and 32 characters.'
+		return True
+
+
+	@staticmethod
+	def check_email_format(email):
+		if not email or email == "":
+			return 'E-mail can\'t be empty.'
+		elif "@" not in email or not re.search( r'(\w+[.|\w])*@(\w+[.])*\w+', email):
+			return 'Incorrect e-mail.'
+		exist = NaginieUser.query.filter(NaginieUser.email==email).first()
+		if exist: 
+			return 'E-mail already in use.'
+
+		return True
 
 __roles_by_slug = {}
 __roles_needs_update = True
@@ -191,64 +231,6 @@ def role_required(roles=[]):
 				return jsonify(auth_expired_msg), 401 # 401 is Unauthorized HTTP status code
 			except jwt.InvalidTokenError:
 				return jsonify(auth_invalid_msg), 401
-			except Exception as e:
-				exc_type, exc_value, exc_traceback = sys.exc_info()
-				traceback.print_tb(exc_traceback, file=sys.stdout)
+
 		return decorated_function
 	return decorator
-
-"""
-class RoleRequired(object):
-	__roles_by_slug = {}
-	__roles_needs_update = True
-
-	def __init__(self, roles=[]):
-		self.roles = roles
-
-	def update_roles(self):
-		if RoleRequired.__roles_needs_update:
-			_roles = NaginieRole.query.filter().all()
-			RoleRequired.__roles_by_slug = {}
-			for _role in _roles:
-				RoleRequired.__roles_by_slug[_role.slug] = _role
-
-			#RoleRequired.__roles_needs_update = False
-
-	def check_roles(self, user, roles):
-		if len(roles) == 0 and user:
-			return True
-		else:
-			for role in roles:
-				if role not in RoleRequired.__roles_by_slug:
-					print('*** Warning: checking vs an unknown role: %s.' % role)
-					continue
-
-				if RoleRequired.__roles_by_slug[role] in user.roles:
-					return True
-			return False
-
-	def __call__(self, f):
-		def wrapped_f(*args, **kwargs):
-			auth_headers = request.headers.get('Authorization', '').split()
-
-			if len(auth_headers) != 2:
-				return jsonify(auth_invalid_msg), 401
-			try:
-				token = auth_headers[1]
-				data = jwt.decode(token, current_app.config['SECRET_KEY'])
-				user = NaginieUser.query.filter(NaginieUser.id==data['user']['id']).first()
-				self.update_roles()
-
-				if not user:
-					raise RuntimeError('User not found')
-
-				if not self.check_roles(user, self.roles):
-					return jsonify(auth_invalid_role), 403
-				return f(user, *args, **kwargs)
-			except jwt.ExpiredSignatureError:
-				return jsonify(auth_expired_msg), 401 # 401 is Unauthorized HTTP status code
-			except (jwt.InvalidTokenError, Exception) as e:
-				print(e)
-				return jsonify(auth_invalid_msg), 401
-		return wrapped_f
-"""

@@ -18,7 +18,6 @@ body::-webkit-scrollbar {
     position: relative;
 }
 
-/* 1024 -1 so it doesnt show when it hits 1024px */
 @media only screen and (max-width: 1023px) {
     .overlay:after {
         content: " ";
@@ -34,27 +33,22 @@ body::-webkit-scrollbar {
     }
 }
 
-@media (min-width: 640px) {
-    table {
-        display: inline-table !important;
-    }
-
-    thead tr:not(:first-child) {
-        display: none;
-    }
+thead tr th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px;}
+thead tr th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
+tbody tr td:first-child { border-top-left-radius: 5px; border-bottom-left-radius: 0px;}
+tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 0px;}
+.table-resp {
+    overflow-x: auto;
+    max-width: 100%;
+}
+.modal {
+  transition: opacity 0.25s ease;
+}
+body.modal-active {
+  overflow-x: hidden;
+  overflow-y: visible !important;
 }
 
-td:not(:last-child) {
-    border-bottom: 0;
-}
-
-
-
-
-th {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-th:first-child {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+.cursor-pointer {
+    cursor: pointer;
 }

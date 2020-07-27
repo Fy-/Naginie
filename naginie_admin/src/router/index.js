@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Users from "../views/Users.vue";
 import User from "../views/User.vue";
+import Roles from "../views/Roles.vue";
 
 Vue.use(VueRouter);
 
@@ -21,7 +22,12 @@ const routes = [
     path: "/users/:id",
     name: "User",
     component: User,
-  }
+  },
+  {
+    path: "/roles/",
+    name: "Roles",
+    component: Roles,
+  },
 ];
 
 const router = new VueRouter({

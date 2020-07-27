@@ -3,6 +3,8 @@ from functools import wraps
 import jwt
 import os
 import datetime
+
+from ..naginie import db
 from ..models.naginie_user import NaginieUser, NaginieRole, role_required
 
 root = os.path.dirname(__file__)
@@ -93,7 +95,64 @@ def users_search(user):
 @bp.route('/users/<int:id>')
 @role_required(['administrator'])
 def users_profile(user, id):
-	user = NaginieUser.query.filter(NaginieUser.id==id).first()
-	if user:
-		return jsonify(user._to_dict(True))
+	cuser = NaginieUser.query.filter(NaginieUser.id==id).first()
+	if cuser:
+		return jsonify(cuser._to_dict(True, True))
 	return jsonify({'error': 404}), 404
+
+### User password change ###
+@bp.route('/users/pwd/<int:id>', methods=('POST',))
+@role_required(['administrator'])
+def users_password(user, id):
+	cuser = NaginieUser.query.filter(NaginieUser.id==id).first()
+	data = request.get_json()
+	pwd = data.get('password', '')
+	check_pwd = NaginieUser.check_password_format(pwd)
+
+	if check_pwd is True:
+		if cuser:
+			cuser.password = pwd
+			cuser.updated = datetime.datetime.now()
+			db.session.add(cuser)
+			db.session.commit()
+			return jsonify({'message': 'success'})
+		return jsonify({'error': 404}), 404
+	else:
+		return jsonify({'error': check_pwd})
+
+### User account change ###
+@bp.route('/users/data/<int:id>', methods=('POST',))
+@role_required(['administrator'])
+def users_data(user, id):
+	cuser = NaginieUser.query.filter(NaginieUser.id==id).first()
+	data = request.get_json()
+	email = data.get('email', '')
+	firstname = data.get('firstname', '')
+	lastname = data.get('lastname', '')
+	username = data.get('username', '')
+
+	check_email = NaginieUser.check_email_format(email)
+
+	if check_email is True or email == cuser.email:
+		if cuser:
+			cuser.email = email
+			cuser.firstname = firstname
+			cuser.lastname = lastname
+			cuser.username = username
+			cuser.updated = datetime.datetime.now()
+			db.session.add(cuser)
+			db.session.commit()
+			return jsonify({'message': 'success'})
+		return jsonify({'error': 404}), 404
+	else:
+		return jsonify({'error': check_email})
+
+### Roles ###
+@bp.route('/users/roles')
+@role_required(['administrator'])
+def users_roles(user,):
+	roles = NaginieRole.query.filter().all()
+	result = []
+	for _r in roles:
+		result.append(_r._to_dict())
+	return jsonify(result)

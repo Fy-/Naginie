@@ -127,6 +127,8 @@
           <p class="mb-2 lg:mb-0">
             Powered by Naginie, made with ❤
           </p>
+                    <flash-message />
+
         </div>
       </div>
     </div>
