@@ -6,6 +6,7 @@ import datetime
 
 from ..naginie import db
 from ..models.naginie_user import NaginieUser, NaginieRole, NaginieStatus, role_required
+from ..helpers.misc import enum_to_select, get_enum_value_from_str
 
 root = os.path.dirname(__file__)
 
@@ -113,8 +114,7 @@ def users_password(user, id):
 		if cuser:
 			cuser.password = pwd
 			cuser.updated = datetime.datetime.now()
-			db.session.add(cuser)
-			db.session.commit()
+			cuser.save()
 			return jsonify({'message': 'success'})
 		return jsonify({'error': 404}), 404
 	else:
@@ -140,19 +140,66 @@ def users_data(user, id):
 			cuser.lastname = lastname
 			cuser.username = username
 			cuser.updated = datetime.datetime.now()
-			db.session.add(cuser)
-			db.session.commit()
+			cuser.save()
 			return jsonify({'message': 'success'})
 		return jsonify({'error': 404}), 404
 	else:
 		return jsonify({'error': check_email})
 
 ### Roles ###
-@bp.route('/users/roles')
+@bp.route('/users/status')
 @role_required([NaginieRole.administrator])
-def users_roles(user,):
+def users_status(user,):
 	status = NaginieStatus.query.filter().order_by(NaginieStatus.id.asc()).all()
 	result = []
 	for _s in status:
 		result.append(_s._to_dict())
 	return jsonify(result)
+
+@bp.route('/users/status/add', methods=('POST',))
+@role_required([NaginieRole.administrator])
+def users_status_add(user):
+	data = request.get_json()
+	role = get_enum_value_from_str(NaginieRole, data.get('role'))
+	title = data.get('title')
+	description = data.get('description')
+	if role == -1:
+		return jsonify({'error': 404}), 404
+			
+	status = NaginieStatus.create(title=title, role=role, description=description)
+	return jsonify({'message': 'success'})
+
+@bp.route('/users/status/del/<int:id>', methods=('GET',))
+@role_required([NaginieRole.administrator])
+def users_status_del(user, id):
+	print(id)
+	status = NaginieStatus.query.filter(NaginieStatus.id==id).first()
+	if status:
+		status.delete()
+		return jsonify({'message': 'success'})
+	return jsonify({'error': 404}), 404
+
+@bp.route('/users/status/edit/<int:id>', methods=('POST',))
+@role_required([NaginieRole.administrator])
+def users_status_edit(user, id):
+	data = request.get_json()
+	role = get_enum_value_from_str(NaginieRole, data.get('role'))
+	title = data.get('title')
+	description = data.get('description')
+
+	status = NaginieStatus.query.filter(NaginieStatus.id==id).first()
+	if status:
+		if role == -1:
+			return jsonify({'error': 404}), 404
+		status.role = role
+		status.title = title
+		status.description = description
+		status.save()
+		return jsonify({'message': 'success'})
+
+	return jsonify({'error': 404}), 404
+		
+@bp.route('/users/roles')
+@role_required([NaginieRole.administrator])
+def users_roles(user,):
+	return jsonify(enum_to_select(NaginieRole))

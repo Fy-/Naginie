@@ -16,18 +16,18 @@ const routes = [
   {
     path: "/users/",
     name: "Users",
-    component: Users,
+    component: Users
   },
   {
     path: "/users/:id",
     name: "User",
-    component: User,
+    component: User
   },
   {
     path: "/roles/",
     name: "Roles",
-    component: Roles,
-  },
+    component: Roles
+  }
 ];
 
 const router = new VueRouter({

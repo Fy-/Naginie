@@ -1,8 +1,9 @@
 import datetime
 
 from ..naginie import db
+from .crud import CRUDMixin
 
-class NaginieOption(db.Model):
+class NaginieOption(db.Model, CRUDMixin):
 	__tablename__ = 'naginie_option'
 
 	key	= db.Column(db.String(64), primary_key = True)

@@ -10,7 +10,10 @@
         class="rounded-lg shadow-md border p-4 pr-30"
         style="min-width: 240px"
       >
-        <button @click="close" class="opacity-75 cursor-pointer absolute top-0 right-0 py-2 px-3 hover:opacity-100">
+        <button
+          @click="close"
+          class="opacity-75 cursor-pointer absolute top-0 right-0 py-2 px-3 hover:opacity-100"
+        >
           ×
         </button>
         <div class="flex items-center">
@@ -29,8 +32,8 @@ export default {
     return {
       message: {
         text: null,
-        type: "success",
-      },
+        type: "success"
+      }
     };
   },
   methods: {
@@ -40,7 +43,7 @@ export default {
   },
   mounted() {
     let timer;
-    EventBus.$on('flash-message', (message) => {
+    EventBus.$on("flash-message", message => {
       clearTimeout(timer);
 
       this.message = message;
@@ -49,7 +52,7 @@ export default {
         this.message.text = null;
       }, 5000);
     });
-  },
+  }
 };
 </script>
 

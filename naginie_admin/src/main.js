@@ -18,6 +18,7 @@ import {
   faSearch
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import VueSimpleAlert from "vue-simple-alert";
 
 Vue.config.productionTip = false;
 Vue.component("font-awesome-icon", FontAwesomeIcon);
@@ -32,10 +33,10 @@ library.add(
   faSearch
 );
 Vue.use(require("vue-moment"));
-Vue.component('FlashMessage', require('./components/FlashMessage.vue').default);
-Vue.component('Modal', require('./components/Modal.vue').default);
-Vue.component('Paginate', require('./components/Paginate.vue').default);
-
+Vue.component("FlashMessage", require("./components/FlashMessage.vue").default);
+Vue.component("Modal", require("./components/Modal.vue").default);
+Vue.component("Paginate", require("./components/Paginate.vue").default);
+Vue.use(VueSimpleAlert);
 
 Vue.config.productionTip = false;
 

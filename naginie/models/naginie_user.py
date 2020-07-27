@@ -11,6 +11,7 @@ from flask import current_app, jsonify, request
 
 from ..naginie import db
 from ..helpers.messages import * 
+from .crud import CRUDMixin
 
 
 """
@@ -27,7 +28,7 @@ class NaginieRole(enum.Enum):
 	contributor = 4
 	subscriber = 5
 
-class NaginieStatus(db.Model):
+class NaginieStatus(db.Model, CRUDMixin):
 	__tablename__ = 'naginie_status'
 	id = db.Column(db.Integer(), primary_key=True)
 	title = db.Column(db.String(96))
@@ -43,7 +44,7 @@ class NaginieStatus(db.Model):
 
 	@hybrid_property
 	def role_str(self):
-		return str(self.role).replace("NaginieRole.", "").capitalize()
+		return str(self.role).replace("NaginieRole.", "")
 
 	def _to_dict(self):
 		return NaginieStatus.to_dict(self)
@@ -55,10 +56,11 @@ class NaginieStatus(db.Model):
 			'title': n_status.title,
 			'role': n_status.role_str,
 			'description': n_status.description,
+			'users': len(n_status.users)
 		}
 
 
-class NaginieUser(db.Model):
+class NaginieUser(db.Model, CRUDMixin):
 	__tablename__ = 'naginie_user'
 
 	id	= db.Column(db.Integer, primary_key = True)
@@ -112,7 +114,7 @@ class NaginieUser(db.Model):
 			'created': n_user.created.isoformat(),
 			'updated': n_user.updated.isoformat(),
 			'logged': n_user.logged.isoformat(),
-			'status': n_user.status._to_dict()
+			'status': n_user.status._to_dict() if n_user.status else False
 		}
 
 
@@ -131,8 +133,7 @@ class NaginieUser(db.Model):
 		user = NaginieUser.query.filter(NaginieUser.email==email).first()
 		if user and user.check_password(password):
 			user.logged = datetime.datetime.now()
-			db.session.add(user)
-			db.session.commit()
+			user.save()
 			return user
 			
 		return None

@@ -2,8 +2,9 @@ from sqlalchemy_mptt.mixins import BaseNestedSets
 import datetime
 
 from ..naginie import db
+from .crud import CRUDMixin
 
-class NaginieDirectory(db.Model, BaseNestedSets):
+class NaginieDirectory(db.Model, BaseNestedSets, CRUDMixin):
 	__tablename__ = 'naginie_directory'
 
 	id	= db.Column(db.Integer, primary_key = True)

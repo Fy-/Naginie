@@ -12,7 +12,7 @@ export function getUsers(page = 1) {
   });
 }
 
-export function searchUser(page = 1, term='') {
+export function searchUser(page = 1, term = "") {
   return axios.get(`${API_URL}/users/search/?page=${page}&term=${term}`, {
     headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
   });
@@ -25,9 +25,13 @@ export function profileUser(id) {
 }
 
 export function passwordUser(id, password) {
-  return axios.post(`${API_URL}/users/pwd/${id}`, {password:password}, {
-    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
-  });
+  return axios.post(
+    `${API_URL}/users/pwd/${id}`,
+    { password: password },
+    {
+      headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+    }
+  );
 }
 
 export function dataUser(id, data) {
@@ -38,6 +42,30 @@ export function dataUser(id, data) {
 
 export function getRoles() {
   return axios.get(`${API_URL}/users/roles`, {
+    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+  });
+}
+
+export function getStatus() {
+  return axios.get(`${API_URL}/users/status`, {
+    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+  });
+}
+
+export function addStatus(data) {
+  return axios.post(`${API_URL}/users/status/add`, data, {
+    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+  });
+}
+
+export function editStatus(id, data) {
+  return axios.post(`${API_URL}/users/status/edit/${id}`, data, {
+    headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
+  });
+}
+
+export function delStatus(id) {
+  return axios.get(`${API_URL}/users/status/del/${id}`, {
     headers: { Authorization: `Bearer: ${localStorage.getItem("token")}` }
   });
 }
