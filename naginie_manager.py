@@ -31,16 +31,17 @@ def init_naginie():
 	NaginieOption.set('theme', 'ron')
 
 	print('*** Adding default roles')
-	db.session.add(NaginieRole(title='Administrator', slug='administrator', description='Somebody who needs to be aware of the Peter Parker principle: With great power comes great responsibility.'))
-	db.session.add(NaginieRole(title='Editor', slug='editor', description='Somebody who can publish and manage posts including the posts of other users.'))
-	db.session.add(NaginieRole(title='Author', slug='author', description='Somebody who can publish and manage their own posts.'))
-	db.session.add(NaginieRole(title='Contributor', slug='contributor', description='Somebody who can write and manage their own posts but cannot publish them.'))
+	db.session.add(NaginieStatus(title='Administrator', role=NaginieRole.administrator, description='Somebody who needs to be aware of the Peter Parker principle: With great power comes great responsibility.'))
+	db.session.add(NaginieStatus(title='Editor', role=NaginieRole.editor, description='Somebody who can publish and manage posts including the posts of other users.'))
+	db.session.add(NaginieStatus(title='Author', role=NaginieRole.author, description='Somebody who can publish and manage their own posts.'))
+	db.session.add(NaginieStatus(title='Contributor', role=NaginieRole.contributor, description='Somebody who can write and manage their own posts but cannot publish them.'))
+	db.session.add(NaginieStatus(title='Subscriber', role=NaginieRole.subscriber, description='Your VIP club /o/'))
 
 	db.session.commit()
-	admin_role = NaginieRole.query.filter(NaginieRole.id==1).first()
+	admin_role = NaginieStatus.query.filter(NaginieStatus.id==1).first()
 
 	print('*** Adding first user')
-	db.session.add(NaginieUser(email='m@fy.to', password='stay', username='Fy', roles=[admin_role]))
+	db.session.add(NaginieUser(email='m@fy.to', password='stay', username='Fy', id_status=admin_role.id))
 	db.session.commit()
 
 ### TESTS ###

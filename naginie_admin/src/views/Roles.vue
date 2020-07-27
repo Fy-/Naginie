@@ -18,7 +18,9 @@
                     <thead>
                         <tr class="text-sm  border font-medium text-gray-700  bg-gray-200  text-left" style="font-size: 0.9674rem">
                             <th class="px-4 py-2 ">ID</th>
-                            <th class="px-4 py-2 ">Title / Role</th>
+                            <th class="px-4 py-2 ">Title</th>
+                                                        <th class="px-4 py-2 "> Role</th>
+
                             <th class="px-4 py-2 ">Description</th>
                         </tr>
                     </thead>
@@ -30,8 +32,9 @@
                                 </td>
                                 <td class="px-4 py-4">
                                     {{ crole.title}}
-                                    <br />
-                                    (<strong>{{ crole.slug }}</strong>)
+                                </td>
+                                 <td class="px-4 py-4">
+                                    <strong>{{ crole.role }}</strong>
                                 </td>
 
                                 <td class="px-4 py-4">

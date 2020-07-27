@@ -54,10 +54,7 @@
                                         }}</router-link>
                                 </td>
                                 <td class="border-grey-light text-center   ">
-                                    <template v-for="crole in cuser.roles">
-                                        <span v-bind:key="crole.id">{{ crole.title }}(<b>{{ crole.slug }}</b>)</span>
-                                    </template>
-                                    <span v-if="cuser.roles.length == 0">n/a</span>
+                                    {{cuser.status.title}}(<b>{{cuser.status.role}}</b>)
                                 </td>
                             </tr>
                         </template>

@@ -5,7 +5,7 @@ import os
 import datetime
 
 from ..naginie import db
-from ..models.naginie_user import NaginieUser, NaginieRole, role_required
+from ..models.naginie_user import NaginieUser, NaginieRole, NaginieStatus, role_required
 
 root = os.path.dirname(__file__)
 
@@ -35,7 +35,7 @@ def login():
 
 ### Users List ###
 @bp.route('/users/')
-@role_required(['administrator'])
+@role_required([NaginieRole.administrator])
 def users(user):
 	page = request.args.get('page', 1)
 	page = int(page)
@@ -58,7 +58,7 @@ def users(user):
 
 ### Users Search ###
 @bp.route('/users/search/')
-@role_required(['administrator'])
+@role_required([NaginieRole.administrator])
 def users_search(user):
 	page = request.args.get('page', 1)
 	page = int(page)
@@ -93,16 +93,16 @@ def users_search(user):
 ### User profile ###
 ### Users Search ###
 @bp.route('/users/<int:id>')
-@role_required(['administrator'])
+@role_required([NaginieRole.administrator])
 def users_profile(user, id):
 	cuser = NaginieUser.query.filter(NaginieUser.id==id).first()
 	if cuser:
-		return jsonify(cuser._to_dict(True, True))
+		return jsonify(cuser._to_dict(True))
 	return jsonify({'error': 404}), 404
 
 ### User password change ###
 @bp.route('/users/pwd/<int:id>', methods=('POST',))
-@role_required(['administrator'])
+@role_required([NaginieRole.administrator])
 def users_password(user, id):
 	cuser = NaginieUser.query.filter(NaginieUser.id==id).first()
 	data = request.get_json()
@@ -122,7 +122,7 @@ def users_password(user, id):
 
 ### User account change ###
 @bp.route('/users/data/<int:id>', methods=('POST',))
-@role_required(['administrator'])
+@role_required([NaginieRole.administrator])
 def users_data(user, id):
 	cuser = NaginieUser.query.filter(NaginieUser.id==id).first()
 	data = request.get_json()
@@ -149,10 +149,10 @@ def users_data(user, id):
 
 ### Roles ###
 @bp.route('/users/roles')
-@role_required(['administrator'])
+@role_required([NaginieRole.administrator])
 def users_roles(user,):
-	roles = NaginieRole.query.filter().all()
+	status = NaginieStatus.query.filter().order_by(NaginieStatus.id.asc()).all()
 	result = []
-	for _r in roles:
-		result.append(_r._to_dict())
+	for _s in status:
+		result.append(_s._to_dict())
 	return jsonify(result)

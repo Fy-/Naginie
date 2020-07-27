@@ -54,9 +54,7 @@
                                     Role
                                 </div>
                                 <div class='w-full md:w-1/2  mb-6  text-sm text-right'>
-                                    <template v-for="crole in cuser.roles">
-                                        <span v-bind:key="crole.id">{{ crole.title }}(<b>{{ crole.slug }}</b>)</span>
-                                    </template>
+                                    {{cuser.status.title}}(<b>{{cuser.status.role}}</b>)
                                 </div>
                             </div>
                         </div>

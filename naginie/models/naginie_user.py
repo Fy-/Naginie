@@ -1,9 +1,9 @@
 import datetime
 import jwt
 import re
+import enum
 
 from functools import wraps
-
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
@@ -13,35 +13,48 @@ from ..naginie import db
 from ..helpers.messages import * 
 
 
+"""
 role_user = db.Table('naginie_role_user',
 	db.Column('user_id', db.Integer(), db.ForeignKey('naginie_user.id')),
 	db.Column('role_id', db.Integer(), db.ForeignKey('naginie_role.id'))
 )
+"""
 
-class NaginieRole(db.Model):
-	__slugs__ = ['administrator', 'editor', 'author', 'contributor']
-	__tablename__ = 'naginie_role'
+class NaginieRole(enum.Enum):
+	administrator = 1
+	editor = 2
+	author = 3
+	contributor = 4
+	subscriber = 5
+
+class NaginieStatus(db.Model):
+	__tablename__ = 'naginie_status'
 	id = db.Column(db.Integer(), primary_key=True)
 	title = db.Column(db.String(96))
-	slug = db.Column(db.String(80), unique=True)
 	description = db.Column(db.String(160))
+	role = db.Column(db.Enum(NaginieRole), index=True, nullable=False, default='member')
+	users = db.relationship("NaginieUser", back_populates="status", lazy="joined", order_by="desc(NaginieUser.id)")
 
 	def __repr__(self):
-		return '<NaginieRole id="%s" title="%s">' % (self.id, self.title)
+		return '<NaginieStatus id="%s" title="%s" role="%s">' % (self.id, self.title, self.role_str)
 
 	def __unicode__(self):
 		return '%s' % self.name
 
+	@hybrid_property
+	def role_str(self):
+		return str(self.role).replace("NaginieRole.", "").capitalize()
+
 	def _to_dict(self):
-		return NaginieRole.to_dict(self)
+		return NaginieStatus.to_dict(self)
 
 	@staticmethod
-	def to_dict(n_role):
+	def to_dict(n_status):
 		return {
-			'id': n_role.id,
-			'slug': n_role.slug,
-			'title': n_role.title,
-			'description': n_role.description,
+			'id': n_status.id,
+			'title': n_status.title,
+			'role': n_status.role_str,
+			'description': n_status.description,
 		}
 
 
@@ -58,9 +71,10 @@ class NaginieUser(db.Model):
 	lastname = db.Column(db.String(80), nullable=True)
 	firstname = db.Column(db.String(80), nullable=True)
 	_password = db.Column("password", db.String(120), nullable=False)
-	roles = db.relationship(
-		'NaginieRole', secondary=role_user, lazy='subquery',
-		backref=db.backref('naginie_user', lazy=True)
+
+	id_status = db.Column(db.Integer, db.ForeignKey("naginie_status.id"))
+	status = db.relationship(
+		"NaginieStatus", back_populates="users", lazy="joined", uselist=False
 	)
 
 	def _get_password(self):
@@ -78,16 +92,16 @@ class NaginieUser(db.Model):
 	tmp_hash = db.Column(db.String(80), index=True, unique=True, nullable=True)
 
 	def __repr__(self):
-		return '<NaginieRole id="%s" nicename="%s">' % (self.id, self.nicename)
+		return '<NaginieStatus id="%s" nicename="%s">' % (self.id, self.nicename)
 
 	def __unicode__(self):
 		return '%s' % self.nicename
 
-	def _to_dict(self, roles=False, prev_next=False):
-		return NaginieUser.to_dict(self, roles, prev_next)
+	def _to_dict(self, prev_next=False):
+		return NaginieUser.to_dict(self, prev_next)
 
 	@staticmethod
-	def to_dict(n_user, roles=False, prev_next=False):
+	def to_dict(n_user, prev_next=False):
 		r =  {
 			'id': n_user.id,
 			'nicename': n_user.nicename,
@@ -97,13 +111,10 @@ class NaginieUser(db.Model):
 			'firstname': n_user.firstname,
 			'created': n_user.created.isoformat(),
 			'updated': n_user.updated.isoformat(),
-			'logged': n_user.logged.isoformat()
+			'logged': n_user.logged.isoformat(),
+			'status': n_user.status._to_dict()
 		}
-		r['roles'] = []
-		r['roles_by_slug'] = []
-		for _role in n_user.roles:
-			r['roles'].append(_role._to_dict())
-			r['roles_by_slug'].append(_role.slug)
+
 
 		if prev_next:
 			r['prev_next'] = n_user.prev_next
@@ -178,6 +189,7 @@ class NaginieUser(db.Model):
 
 		return True
 
+"""
 __roles_by_slug = {}
 __roles_needs_update = True
 
@@ -185,7 +197,7 @@ def update_roles():
 	global __roles_by_slug, __roles_needs_update
 
 	if __roles_needs_update:
-		_roles = NaginieRole.query.filter().all()
+		_roles = NaginieStatus.query.filter().all()
 		__roles_by_slug = {}
 		for _role in _roles:
 			__roles_by_slug[_role.slug] = _role
@@ -206,6 +218,7 @@ def check_roles( user, roles):
 			if __roles_by_slug[role] in user.roles:
 				return True
 		return False
+"""
 
 def role_required(roles=[]):
 	def decorator(f):
@@ -219,12 +232,11 @@ def role_required(roles=[]):
 				token = auth_headers[1]
 				data = jwt.decode(token, current_app.config['SECRET_KEY'])
 				user = NaginieUser.query.filter(NaginieUser.id==data['user']['id']).first()
-				update_roles()
 
 				if not user:
 					raise RuntimeError('User not found')
 
-				if not check_roles(user, roles):
+				if not user.status.role in roles:
 					return jsonify(auth_invalid_role), 403
 				return f(user, *args, **kwargs)
 			except jwt.ExpiredSignatureError:
