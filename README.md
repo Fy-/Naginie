@@ -16,7 +16,7 @@ It's still early stage and **Naginie is not usable at the moment**.
 	python manager.py init_naginie 
 
     #: to run
-    flask run
+    flask run --host 0.0.0.0 --port 8888
 
     #: to run admin
     cd naginie_admin
