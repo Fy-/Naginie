@@ -8,20 +8,20 @@
 
 ## Status ##
 It's still early stage and **Naginie is not usable at the moment**.
-	#: init
-	# .env 
-	python manager.py db init
-	python manager.py db migrate
-	python manager.py db upgrade
-	python manager.py init_naginie 
 
-    #: to run
-    flask run
 
-    #: to run admin
+    // init & .env 
+    python manager.py db init
+    python manager.py db migrate
+    python manager.py db upgrade
+    python manager.py init_naginie 
+
+    // run naginie
+    flask run --host 0.0.0.0 --port 8888
+
+    // run admin
     cd naginie_admin
     npm run serve // or you can go to localhost:5000/admin after using npm run build
-
 
 
 ## History ##
