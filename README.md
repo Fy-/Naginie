@@ -8,6 +8,21 @@
 
 ## Status ##
 It's still early stage and **Naginie is not usable at the moment**.
+	#: init
+	# .env 
+	python manager.py db init
+	python manager.py db migrate
+	python manager.py db upgrade
+	python manager.py init_naginie 
+
+    #: to run
+    flask run
+
+    #: to run admin
+    cd naginie_admin
+    npm run serve // or you can go to localhost:5000/admin after using npm run build
+
+
 
 ## History ##
 I made a flask based CMS a long time ago and this is the 2020 version of my old CMS: [FyPress](https://github.com/Fy-/FyPress). I was tired of WordPress and I plan on developing tools to migrate from WP to Naginie in the future.

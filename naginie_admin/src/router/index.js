@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Users from "../views/Users.vue";
 import User from "../views/User.vue";
 import Roles from "../views/Roles.vue";
+import Directories from "../views/Directories.vue";
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
     path: "/roles/",
     name: "Roles",
     component: Roles
+  },
+  {
+    path: "/directories/",
+    name: "Directories",
+    component: Directories
   }
 ];
 

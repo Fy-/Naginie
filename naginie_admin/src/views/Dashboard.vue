@@ -79,17 +79,10 @@
             <div class="flex">
               <div class="inline-block lg:hidden flex items-center mr-4">
                 <button
-                  class="hover:text-teal-500 text-grey-200 hover:border-teal-700 focus:outline-none navbar-burger"
+                  class="hover:text-teal-300 text-grey-200 hover:border-teal-700 focus:outline-none navbar-burger z-50"
                   @click="toggleSidebar()"
                 >
-                  <svg
-                    class="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <title>Menu</title>
-                    <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-                  </svg>
+                  <font-awesome-icon icon="bars"></font-awesome-icon>
                 </button>
               </div>
             </div>
@@ -132,7 +125,7 @@
               >Fy</a
             >, with <span class="text-red-400">❤</span>
           </p>
-          <flash-message />
+          <n-flash />
         </div>
       </div>
     </div>
@@ -141,7 +134,7 @@
 
 <script>
 import { mapState } from "vuex";
-import NavLink from "@/components/NavLink";
+import NavLink from "@/components/widgets/NavLink";
 
 export default {
   name: "Dashboard",
@@ -158,11 +151,14 @@ export default {
     };
   },
   mounted() {
-    this.theme = localStorage.getItem("theme") || "light-mode";
+    this.theme = localStorage.getItem("theme") || "dark-mode";
   },
   methods: {
     toggleSidebar() {
       this.$store.dispatch("toggleSidebar");
+    },
+    closeSidebar() {
+      if (this.sideBarOpen) this.$store.dispatch("toggleSidebar");
     },
     logout() {
       this.$store.dispatch("logout").then(() => this.$router.go("/"));

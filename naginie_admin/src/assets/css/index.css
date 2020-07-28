@@ -27,7 +27,9 @@
         position: fixed;
     }
 }
-.
+tbody tr td:first-child {
+    border-top-width: 1px;
+}
 /*
 thead tr th:first-child {
     border-top-left-radius: 10px;

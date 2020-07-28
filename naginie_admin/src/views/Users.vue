@@ -1,18 +1,6 @@
 <template>
   <div id="home">
-    <nav class="text-sm font-semibold mb-6" aria-label="Breadcrumb">
-      <ol class="list-none p-0 inline-flex">
-        <li class="flex items-center text-teal-200">
-          <router-link to="/" class="text-gray-500 pr-4">Dashboard</router-link>
-          <font-awesome-icon icon="arrow-right"></font-awesome-icon>
-        </li>
-        <li class="flex items-center">
-          <router-link to="/users/" class="text-teal-400 pl-4"
-            >Users</router-link
-          >
-        </li>
-      </ol>
-    </nav>
+    <n-breadcrumb :nav="[{ to: '/', name: 'Dashboard' }, { name: 'Users' }]" />
     <div class="">
       <div class="container mx-auto">
         <div class="float-left text-gray-300   my-3 display-block">
@@ -32,9 +20,9 @@
             </button>
           </form>
         </div>
-        <Paginate :items="users" />
+        <n-paginate :items="users" />
 
-        <DataTable :data.sync="users.items" :headers="headers">
+        <n-table :data.sync="users.items" :headers="headers">
           <template v-slot:id_item="property">
             <router-link
               class="text-teal-400 hover:text-teal-200"
@@ -68,8 +56,8 @@
             }}</span>
             <span v-else>n/a</span>
           </template>
-        </DataTable>
-        <Paginate :items="users" />
+        </n-table>
+        <n-paginate :items="users" />
       </div>
     </div>
   </div>
@@ -78,12 +66,9 @@
 import { mapState } from "vuex";
 import { getUsers, searchUser } from "@/api/user";
 import { EventBus } from "@/helpers/utils";
-import DataTable from "@/components/DataTable";
 export default {
   name: "Users",
-  components: {
-    DataTable
-  },
+  components: {},
   data() {
     return {
       users: {},

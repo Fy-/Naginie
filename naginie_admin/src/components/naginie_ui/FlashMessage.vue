@@ -4,10 +4,10 @@
       <div
         v-if="message.text"
         :class="{
-          'bg-red-300 text-red-900': message.type === 'error',
-          'bg-green-300 text-green-900': message.type === 'success'
+          'bg-red-700 text-red-200': message.type === 'error',
+          'bg-green-700 text-green-200': message.type === 'success'
         }"
-        class="rounded-lg shadow-md border p-4 pr-30"
+        class="rounded-lg shadow-md  p-4 pr-30"
         style="min-width: 240px"
       >
         <button
@@ -50,7 +50,7 @@ export default {
 
       timer = setTimeout(() => {
         this.message.text = null;
-      }, 5000);
+      }, 2000);
     });
   }
 };

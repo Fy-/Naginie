@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, render_template
 
-from ..helpers.template import tpl_dir, get_tpl_name
+from naginie.helpers.template import tpl_dir, get_tpl_name
 
 bp = Blueprint(
 	"default", __name__,

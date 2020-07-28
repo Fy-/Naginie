@@ -1,8 +1,8 @@
 from sqlalchemy_mptt.mixins import BaseNestedSets
 import datetime
 
-from ..naginie import db
-from .crud import CRUDMixin
+from naginie.extensions import db
+from naginie.database import CRUDMixin
 
 class NaginieDirectory(db.Model, BaseNestedSets, CRUDMixin):
 	__tablename__ = 'naginie_directory'

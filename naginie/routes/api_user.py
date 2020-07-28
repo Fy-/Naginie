@@ -4,15 +4,14 @@ import jwt
 import os
 import datetime
 
-from ..naginie import db
-from ..models.naginie_user import NaginieUser, NaginieRole, NaginieStatus, role_required
-from ..helpers.misc import enum_to_select, get_enum_value_from_str
+from naginie.extensions import db
+from naginie.models.naginie_user import NaginieUser, NaginieRole, NaginieStatus, role_required
+from naginie.helpers.misc import enum_to_select, get_enum_value_from_str
 
 root = os.path.dirname(__file__)
 
-#: Serve vue app static
 bp = Blueprint(
-	'api', __name__, url_prefix='/api'
+	'api_user', __name__, url_prefix='/api'
 )
 
 ### Login ###

@@ -1,37 +1,19 @@
 <template>
   <div id="home">
-    <nav class="text-sm font-semibold mb-6" aria-label="Breadcrumb">
-      <ol class="list-none p-0 inline-flex">
-        <li class="flex items-center text-teal-200">
-          <router-link to="/" class="text-gray-500 pr-4">Dashboard</router-link>
-          <font-awesome-icon icon="arrow-right"></font-awesome-icon>
-        </li>
-        <li class="flex items-center text-teal-200">
-          <router-link to="/users/" class="text-gray-500 pl-4 pr-4"
-            >Users</router-link
-          >
-          <font-awesome-icon icon="arrow-right"></font-awesome-icon>
-        </li>
-        <li class="flex items-center">
-          <router-link :to="`/users/${cuser.id}`" class="text-teal-400 pl-4"
-            >#{{ cuser.id }} - {{ cuser.nicename }}</router-link
-          >
-        </li>
-      </ol>
-    </nav>
+    <n-breadcrumb :nav="breadcrumb" />
     <div class="flex items-center justify-center">
       <!-- component -->
       <div class="container mx-auto " v-if="cuser.id">
         <router-link
           :to="`/users/${cuser.prev_next.prev}`"
           v-if="cuser.prev_next.prev"
-          class="mb-4  float-left bg-teal-500 hover:bg-teal-700 text-white  py-1 px-2 rounded focus:outline-none focus:shadow-outline "
+          class="mb-4  float-left bg-teal-500 hover:bg-teal-700 text-white  py-1 px-2 rounded focus:outline-none focus:shadow-outline ml-10"
           >Prev</router-link
         >
         <router-link
           :to="`/users/${cuser.prev_next.next}`"
           v-if="cuser.prev_next.next"
-          class="mb-4 bg-teal-500 hover:bg-teal-700 text-white  py-1 px-2 rounded focus:outline-none focus:shadow-outline  float-right"
+          class="mb-4 bg-teal-500 hover:bg-teal-700 text-white  py-1 px-2 rounded focus:outline-none focus:shadow-outline  float-right mr-10"
           >Next</router-link
         >
         <div
@@ -162,7 +144,7 @@
         </div>
       </div>
     </div>
-    <Modal title="Change Password" id="pwd_change" :show="modalPassword">
+    <n-modal title="Change Password" id="pwd_change" :show="modalPassword">
       <template v-slot:body>
         <form>
           <small v-if="passwordErr" class="text-small text-red-300">{{
@@ -198,7 +180,7 @@
           </div>
         </form>
       </template>
-    </Modal>
+    </n-modal>
   </div>
 </template>
 <script>
@@ -214,7 +196,11 @@ export default {
       password: "",
       passwordc: "",
       passwordErr: "",
-      modalPassword: false
+      modalPassword: false,
+      breadcrumb: [
+        { to: "/", name: "Dashboard" },
+        { to: "/users/", name: "Users" }
+      ]
     };
   },
   computed: {
@@ -228,6 +214,13 @@ export default {
       profileUser(this.$route.params.id).then(response => {
         if (response.status == 200) {
           this.cuser = response.data;
+          this.breadcrumb = [
+            { to: "/", name: "Dashboard" },
+            { to: "/users/", name: "Users" }
+          ];
+          this.breadcrumb.push({
+            name: `#${this.cuser.id} - ${this.cuser.nicename}`
+          });
         }
       });
     },

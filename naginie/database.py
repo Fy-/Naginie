@@ -1,4 +1,6 @@
-from ..naginie import db
+
+from naginie.extensions import db
+
 
 class CRUDMixin(object):
     @classmethod

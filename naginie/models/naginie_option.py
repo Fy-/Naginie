@@ -1,7 +1,7 @@
 import datetime
 
-from ..naginie import db
-from .crud import CRUDMixin
+from naginie.extensions import db
+from naginie.database import CRUDMixin
 
 class NaginieOption(db.Model, CRUDMixin):
 	__tablename__ = 'naginie_option'

@@ -9,9 +9,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from flask import current_app, jsonify, request
 
-from ..naginie import db
-from ..helpers.messages import * 
-from .crud import CRUDMixin
+from naginie.extensions import db
+from naginie.helpers.messages import * 
+from naginie.database import CRUDMixin
 
 
 """

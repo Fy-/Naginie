@@ -1,6 +1,6 @@
 import os 
 
-from ..naginie import options
+from naginie.extensions import options
 
 __tpl_dir__ = False
 

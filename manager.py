@@ -2,14 +2,13 @@ from flask_migrate import MigrateCommand
 from flask_script import Manager
 import pprint, csv
 
-from naginie_demo import create_app
-from config import Config
-from naginie.naginie import db
+from naginie.app import Naginie
+from naginie.extensions import db, migrate
 from naginie.models import *
 
 pp = pprint.PrettyPrinter(indent=4)
-app = create_app(Config)
-migrate = app.migrate
+app = Naginie('naginie_demo').create_app('/')
+migrate = migrate
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
@@ -45,6 +44,24 @@ def init_naginie():
 	db.session.commit()
 
 ### TESTS ###
+@manager.command
+def test_directories():
+	db.session.add_all(
+	    [
+	        NaginieDirectory(title="foo", slug="foo", description="foo desc", parent_id=1),
+	        NaginieDirectory(title="bar", slug="bar", description="bar desc", parent_id=2),
+	        NaginieDirectory(title="baz", slug="baz", description="baz desc", parent_id=3),
+	    ]
+	)
+	db.session.add_all( 
+	    [
+	        NaginieDirectory(title="foo1", slug="foo1", description="foo1 desc", parent_id=1),
+	        NaginieDirectory(title="bar1", slug="bar1", description="bar1 desc", parent_id=5),
+	        NaginieDirectory(title="baz1", slug="baz1", description="baz1 desc", parent_id=5),
+	    ]
+	)
+	db.session.commit()
+	
 @manager.command
 def test_users():
 	with open('./naginie_tests/datas/users.csv', "r") as f:

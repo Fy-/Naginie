@@ -1,21 +1,21 @@
 <template>
   <div id="home">
-    <nav class="text-sm font-semibold mb-6" aria-label="Breadcrumb">
-      <ol class="list-none p-0 inline-flex">
-        <li class="flex items-center text-teal-200">
-          <router-link to="/" class="text-gray-500 pr-4">Dashboard</router-link>
-          <font-awesome-icon icon="arrow-right"></font-awesome-icon>
-        </li>
-        <li class="flex items-center">
-          <router-link to="/roles/" class="text-teal-400 pl-4"
-            >Roles</router-link
-          >
-        </li>
-      </ol>
-    </nav>
+    <n-breadcrumb
+      :nav="[{ to: '/', name: 'Dashboard' }, { name: 'Status / Roles' }]"
+    />
+
     <div class="">
       <div class="container mx-auto">
-        <DataTable :data.sync="status" :headers="headers">
+        <a
+          class="mb-4  float-left bg-teal-500 hover:bg-teal-700 text-white  py-1 px-2 rounded focus:outline-none focus:shadow-outline "
+          href="javascript:void(0)"
+          @click="
+            resetCurrentStatus();
+            modalStatus = true;
+          "
+          >New Role</a
+        >
+        <n-table :data.sync="status" :headers="headers">
           <template v-slot:actions_item="property">
             <a
               href="javascript:void(0);"
@@ -31,10 +31,14 @@
               >Delete</a
             >
           </template>
-        </DataTable>
+        </n-table>
       </div>
     </div>
-    <Modal title="Add User Status" id="status_change" :show="modalStatus">
+    <n-modal
+      :title="currentStatus.id ? 'Edit User Status' : 'Add User Status'"
+      id="status_change"
+      :show="modalStatus"
+    >
       <template v-slot:body>
         <form>
           <small v-if="statusErr" class="text-small text-red-600">{{
@@ -102,7 +106,7 @@
           </div>
         </form>
       </template>
-    </Modal>
+    </n-modal>
   </div>
 </template>
 <script>
@@ -115,13 +119,10 @@ import {
   delStatus
 } from "@/api/user";
 import { EventBus } from "@/helpers/utils";
-import DataTable from "@/components/DataTable";
 
 export default {
   name: "Roles",
-  components: {
-    DataTable
-  },
+  components: {},
   data() {
     return {
       status: [],
@@ -157,12 +158,20 @@ export default {
           this.listStatus();
           this.resetCurrentStatus();
           this.modalStatus = false;
+          EventBus.$emit("flash-message", {
+            text: `Role saved.`,
+            type: "success"
+          });
         });
       } else {
         addStatus(this.currentStatus).then(() => {
           this.listStatus();
           this.resetCurrentStatus();
           this.modalStatus = false;
+          EventBus.$emit("flash-message", {
+            text: `Role added.`,
+            type: "success"
+          });
         });
       }
     });

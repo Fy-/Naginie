@@ -1,2 +1,2 @@
-from .naginie import Naginie
+from .app import Naginie
 from .models import *

@@ -3,7 +3,9 @@ from flask import Blueprint, render_template, send_from_directory, jsonify, curr
 import os
 import jwt
 import datetime
-from ..models.naginie_user import NaginieUser
+
+from naginie.models.naginie_user import NaginieUser
+
 root = os.path.dirname(__file__)
 
 #: Serve vue app static
